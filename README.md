@@ -1,7 +1,7 @@
 # Ex.No:6
 # IMPLEMENTATION OF THE BACK END OF THE COMPILER 
 ## Register Number:212223043006
-## Date:09/04/2025
+## Date:07/05/2025
 ## AIM:
 To write a program to implement the back end of the compiler.
 ## ALGORITHM:
@@ -14,42 +14,67 @@ To write a program to implement the back end of the compiler.
 ## PROGRAM:
 ```
 #include <stdio.h>
-#include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 int main() {
-int i = 2, j = 0, k = 2, k1 = 0; char ip[10], kk[10];
-FILE *fp;
+    char line[100], var[10], op1[10], op2[10], res[10], op;
+    char filename[50];
+    FILE *fp;
+    int reg = 0;
 
-printf("Enter the filename of the intermediate code: "); scanf("%s", kk);
+    printf("Enter the filename of the intermediate code: ");
+    scanf("%s", filename);
 
-fp = fopen(kk, "r"); if (fp == NULL) {
-printf("\nError in opening the file\n"); return 1;
+    fp = fopen(filename, "r");
+    if (fp == NULL) {
+        printf("Error: Could not open file.\n");
+        return 1;
+    }
+
+    printf("\nIntermediate Code:\n\n");
+
+    while (fgets(line, sizeof(line), fp)) {
+        printf("\t\t%s", line);
+    }
+
+    rewind(fp);
+
+    printf("\n\n\tStatement\t\tTarget Code\n\n");
+
+    while (fgets(line, sizeof(line), fp)) {
+        // Remove newline if exists
+        line[strcspn(line, "\n")] = 0;
+
+        // Example format: t1 = a + b
+        if (sscanf(line, "%s = %s %c %s", res, op1, &op, op2) == 4) {
+            printf("%s\t\t\tMOV %s, R%d\n", line, op2, reg);
+            printf("\t\t\t");
+
+            if (op == '+')
+                printf("ADD ");
+            else if (op == '-')
+                printf("SUB ");
+            else if (op == '*')
+                printf("MUL ");
+            else if (op == '/')
+                printf("DIV ");
+            else
+                printf("OP? ");
+
+            printf("%s, R%d\n\n", op1, reg);
+            reg++;
+        }
+    }
+
+    fclose(fp);
+    return 0;
 }
-printf("\nStatement\tTarget Code\n\n"); while (fscanf(fp, "%s", ip) != EOF) {
-printf("%s\tMOV %c,R%d SUB ", ip, ip[i + k], j);
-
-if (ip[i + 1] == '+')
-printf("ADD "); else
-printf("SUB ");
-
-if (islower(ip[i])) printf("%c,R%d\n", ip[i + k1], j);
-else
-printf("%c,%c\n", ip[i], ip[i + 2]);
-
-j++;
-k1 = 2;
-k = 0;
-}
-
-fclose(fp);
-
-return 0;
 }
 ```
 ## OUTPUT:
-![ex 6](https://github.com/user-attachments/assets/bc0e8be1-317b-4c65-bde4-09a951f19ba9)
-
+![ex 6](https://github.com/user-attachments/assets/029abde4-a42c-48c8-85f5-dd50459cf924)
 
 ## RESULT:
 The back end of the compiler is implemented successfully, and the output is verified.
